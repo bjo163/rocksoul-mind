@@ -12,59 +12,69 @@ Current upstream baseline: `6fc918beb68a0d8c40452338df6319fe168014ba`.
 
 ## Phase 0 — Foundation & CPU Baseline
 
-Goal: prove the original MiniMind-3 64M runtime on CPU before changing language, tokenizer, architecture, or domain behavior.
+Status: **complete enough to proceed**. Target-server benchmarking is now optional rather than a gate.
 
-### Implementation status
+Completed:
 
-- [x] Keep upstream-compatible `master` and isolate RockSoul work on `dev`.
-- [x] Add a dedicated FP32 CPU runtime without modifying MiniMind core inference behavior.
-- [x] Add deterministic CPU benchmark for load time, RSS, TTFT and tokens/sec.
-- [x] Add isolated context-memory benchmark.
-- [x] Add OpenAI-compatible API smoke client.
-- [x] Add CPU Dockerfile and Docker Compose deployment.
-- [x] Define tool-call contract v0 and parser unit tests.
-- [x] Add lightweight CI for syntax, tests and Compose validation.
-- [x] Confirm clean dependency installation and MiniMind-3 download/model load on GitHub-hosted CPU runner.
-- [x] Complete real-model CPU inference and OpenAI-compatible API smoke on GitHub-hosted runner.
-- [x] Commit GitHub-hosted core CPU reference baseline with exact workflow/artifact evidence.
-- [x] Commit isolated 128/512/1024/2048-token context-memory reference baseline.
-- [x] Add target-server hardware metadata collector.
-- [ ] Capture benchmark results on the target production CPU server.
-- [ ] Capture context-memory results on the target production CPU server.
-- [ ] Commit target-server system metadata beside production benchmark results.
+- upstream-compatible `master` and isolated `dev`
+- dedicated CPU runtime
+- OpenAI-compatible API smoke path
+- Docker/Compose CPU deployment
+- tool-call contract v0 and parser tests
+- deterministic CPU benchmark utilities
+- GitHub-hosted real-model CPU inference evidence
+- GitHub-hosted context-memory evidence
+- target-server benchmark tooling retained for optional later use
 
-### Required work
-
-- Reproduce clean CPU inference.
-- Record hardware and software metadata.
-- Measure process RSS/RAM, model load time, first-token latency, generation tokens/sec, and context-memory growth.
-- Validate the existing OpenAI-compatible API path.
-- Add deterministic smoke tests for inference and structured output.
-- Define a stable tool-call schema.
-- Establish a CPU-oriented export/runtime path after PyTorch baseline measurements are captured.
-
-### Definition of done
-
-- CPU inference works from a clean environment.
-- Baseline results are reproducible and checked into the repository.
-- OpenAI-compatible API works locally.
-- Tool-call contract is documented and validated by tests.
-- No ID/EN or domain training starts before the target CPU baseline is recorded.
+The project proceeds without requiring a production CPU benchmark before language training.
 
 ## Phase 1 — ID+EN Adaptation
 
-Target Indonesian-heavy bilingual foundation while retaining English technical comprehension.
+Status: **active**.
 
-Initial target mix:
+Goal: create an Indonesian-heavy bilingual foundation while retaining useful English technical comprehension.
+
+### Language target
 
 - 70% Indonesian
 - 30% English
 
-Evaluate tokenizer efficiency, perplexity/loss, general instruction retention, technical English retention, and catastrophic forgetting.
+### Strategy
+
+- continued pretraining from the released MiniMind-3 dense `pretrain_768.pth`
+- do not train from zero
+- keep architecture unchanged
+- keep tokenizer unchanged
+- do not mix ERP/ISP/domain/tool-call data yet
+
+### Data
+
+- Indonesian: `HuggingFaceFW/fineweb-2`, config `ind_Latn`
+- English: `HuggingFaceFW/fineweb-edu`, config `sample-10BT`
+- token-aware chunking
+- deterministic train/eval/test split
+- 20M-token pilot first
+- scale to 100M+ tokens only after the pilot is evaluated
+
+### Implementation status
+
+- [x] Define ID+EN corpus sources and attribution.
+- [x] Add deterministic streaming corpus builder.
+- [x] Add verified/pinned base checkpoint downloader.
+- [x] Add single-GPU continued-pretraining launcher.
+- [x] Add bilingual base-vs-adapted perplexity evaluation.
+- [x] Add Kaggle training notebook.
+- [ ] Build the 20M-token pilot corpus on GPU training environment.
+- [ ] Run continued pretraining.
+- [ ] Record Indonesian/English holdout deltas.
+- [ ] Promote or revise the language mix based on evidence.
+- [ ] Version the accepted `rocksoul_iden_pretrain_768.pth` checkpoint.
+
+Detailed procedure: `docs/PHASE1_IDEN.md`.
 
 ## Phase 2 — Instruction & Structured Output
 
-Train and evaluate:
+After Phase 1 checkpoint promotion, train and evaluate:
 
 - Indonesian instruction following
 - concise English instruction following
@@ -72,6 +82,9 @@ Train and evaluate:
 - extraction
 - classification
 - deterministic tool arguments
+- tool-selection behavior
+
+The instruction dataset should descend from the accepted ID+EN checkpoint, not from the original MiniMind checkpoint.
 
 ## Phase 3 — Tool Calling, Web & Scraping Controller
 
@@ -98,25 +111,25 @@ Candidate domains:
 - FTTH / OLT
 - PostgreSQL / API operations
 
-Domain models should descend from the validated ID+EN checkpoint rather than replace the bilingual foundation.
+Domain models should descend from the validated ID+EN + instruction checkpoint rather than replace the bilingual foundation.
 
 ## Training strategy
 
-Production target is CPU-only. GPU is treated as an intermittent training resource, not a deployment requirement.
+Production target is CPU-only. GPU is an intermittent training resource, not a deployment requirement.
 
-Recommended lifecycle:
+Lifecycle:
 
-1. Develop and evaluate locally on CPU.
-2. Prepare deterministic datasets and training configs.
-3. Use temporary/free GPU infrastructure for SFT/LoRA when needed.
-4. Publish/version checkpoints.
-5. Export/quantize for CPU deployment.
-6. Re-run the same benchmark suite before promotion.
+1. Build deterministic datasets/configs.
+2. Train using temporary/free GPU infrastructure.
+3. Evaluate exact checkpoint against the previous stage.
+4. Version accepted checkpoints and manifests.
+5. Export/quantize for CPU deployment after model behavior is accepted.
 
 ## Guardrails
 
-- Do not enlarge the model before baseline evidence shows it is necessary.
+- Do not enlarge the model before evidence shows 64M is insufficient.
+- Do not change tokenizer during Phase 1.
 - Do not mix language adaptation, domain specialization, tool calling, and architecture changes in one experiment.
-- Keep benchmarks deterministic and compare exact checkpoint/config hashes.
-- Prefer programmatic tools for browsing/scraping/database/network actions; use the LLM for planning, selection, extraction, and bounded reasoning.
+- Keep dataset sources, ratios, seeds, checkpoint hashes and evaluation results reproducible.
+- Prefer programmatic tools for browsing/scraping/database/network actions; use the LLM for planning, selection, extraction and bounded reasoning.
 - Preserve upstream license and attribution requirements.
