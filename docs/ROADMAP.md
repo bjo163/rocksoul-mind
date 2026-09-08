@@ -14,6 +14,21 @@ Current upstream baseline: `6fc918beb68a0d8c40452338df6319fe168014ba`.
 
 Goal: prove the original MiniMind-3 64M runtime on CPU before changing language, tokenizer, architecture, or domain behavior.
 
+### Implementation status
+
+- [x] Keep upstream-compatible `master` and isolate RockSoul work on `dev`.
+- [x] Add a dedicated FP32 CPU runtime without modifying MiniMind core inference behavior.
+- [x] Add deterministic CPU benchmark for load time, RSS, TTFT and tokens/sec.
+- [x] Add isolated context-memory benchmark.
+- [x] Add OpenAI-compatible API smoke client.
+- [x] Add CPU Dockerfile and Docker Compose deployment.
+- [x] Define tool-call contract v0 and parser unit tests.
+- [x] Add lightweight CI for syntax, tests and Compose validation.
+- [x] Confirm clean dependency installation and MiniMind-3 download/model load on GitHub-hosted CPU runner.
+- [ ] Complete real-model inference + API smoke after compatibility fixes.
+- [ ] Capture benchmark results on the target production CPU server.
+- [ ] Capture context-memory results on the target production CPU server.
+
 ### Required work
 
 - Reproduce clean CPU inference.
