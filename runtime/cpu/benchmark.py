@@ -22,7 +22,14 @@ def build_prompt(tokenizer, text):
 
 
 def generate(model, tokenizer, prompt, max_new_tokens):
-    inputs = tokenizer(prompt, return_tensors="pt")
+    encoded = tokenizer(prompt, return_tensors="pt")
+    inputs = {
+        "input_ids": encoded["input_ids"],
+        "attention_mask": encoded.get("attention_mask"),
+    }
+    if inputs["attention_mask"] is None:
+        inputs.pop("attention_mask")
+
     started = time.perf_counter()
     with torch.inference_mode():
         output = model.generate(
@@ -30,11 +37,11 @@ def generate(model, tokenizer, prompt, max_new_tokens):
             max_new_tokens=max_new_tokens,
             do_sample=False,
             use_cache=True,
-            pad_token_id=tokenizer.pad_token_id or tokenizer.eos_token_id,
+            pad_token_id=tokenizer.pad_token_id if tokenizer.pad_token_id is not None else tokenizer.eos_token_id,
             eos_token_id=tokenizer.eos_token_id,
         )
     elapsed = time.perf_counter() - started
-    generated = max(output.shape[-1] - inputs["input_ids"].shape[-1], 0)
+    generated = max(output.shape[-1] - encoded["input_ids"].shape[-1], 0)
     return elapsed, generated
 
 
@@ -54,7 +61,7 @@ def main():
     model = AutoModelForCausalLM.from_pretrained(
         args.model,
         trust_remote_code=True,
-        torch_dtype=torch.float32,
+        dtype=torch.float32,
         low_cpu_mem_usage=True,
     ).eval().to("cpu")
     load_seconds = time.perf_counter() - load_started
