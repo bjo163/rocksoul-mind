@@ -25,9 +25,13 @@ Goal: prove the original MiniMind-3 64M runtime on CPU before changing language,
 - [x] Define tool-call contract v0 and parser unit tests.
 - [x] Add lightweight CI for syntax, tests and Compose validation.
 - [x] Confirm clean dependency installation and MiniMind-3 download/model load on GitHub-hosted CPU runner.
-- [ ] Complete real-model inference + API smoke after compatibility fixes.
+- [x] Complete real-model CPU inference and OpenAI-compatible API smoke on GitHub-hosted runner.
+- [x] Commit GitHub-hosted core CPU reference baseline with exact workflow/artifact evidence.
+- [x] Commit isolated 128/512/1024/2048-token context-memory reference baseline.
+- [x] Add target-server hardware metadata collector.
 - [ ] Capture benchmark results on the target production CPU server.
 - [ ] Capture context-memory results on the target production CPU server.
+- [ ] Commit target-server system metadata beside production benchmark results.
 
 ### Required work
 
@@ -45,7 +49,7 @@ Goal: prove the original MiniMind-3 64M runtime on CPU before changing language,
 - Baseline results are reproducible and checked into the repository.
 - OpenAI-compatible API works locally.
 - Tool-call contract is documented and validated by tests.
-- No ID/EN or domain training starts before the baseline is recorded.
+- No ID/EN or domain training starts before the target CPU baseline is recorded.
 
 ## Phase 1 — ID+EN Adaptation
 
