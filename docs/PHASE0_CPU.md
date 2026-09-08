@@ -14,6 +14,14 @@ pip install torch==2.6.0 --index-url https://download.pytorch.org/whl/cpu
 pip install -r runtime/cpu/requirements.txt
 ```
 
+## Record target server hardware
+
+```bash
+python runtime/cpu/system_info.py > benchmarks/cpu/system-info.json
+```
+
+This records CPU model, physical/logical cores, RAM, OS/kernel, machine architecture and Python version.
+
 ## Core benchmark
 
 ```bash
@@ -82,7 +90,7 @@ The named `rocksoul_hf_cache` volume preserves downloaded model files across con
 
 ## Reproducibility rules
 
-1. Record CPU model, core/thread count and total RAM with every benchmark result.
+1. Save `system-info.json` beside every target-server benchmark set.
 2. Use the same prompt and `max_new_tokens` when comparing runs.
 3. Run at least three measured passes after model download and warm-up.
 4. Run context-memory measurements in isolated processes.
@@ -97,6 +105,7 @@ Phase 0 can close when:
 - API smoke test succeeds
 - benchmark result from the target CPU server is committed
 - context-memory baseline from the target CPU server is committed
+- target server system metadata is committed beside the benchmark
 - tool-call parser tests pass
 - CPU CI passes
 - baseline RAM, TTFT and tokens/sec are known
