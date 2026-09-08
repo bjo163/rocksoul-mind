@@ -1,0 +1,28 @@
+{
+  "model": "jingyaogong/minimind-3",
+  "device": "cpu",
+  "dtype": "float32",
+  "platform": "Linux-6.17.0-1022-azure-x86_64-with-glibc2.39",
+  "python": "3.10.21",
+  "torch": "2.6.0+cpu",
+  "cpu_threads": 2,
+  "parameter_count": 63912192,
+  "parameter_millions": 63.912,
+  "prompt_tokens": 40,
+  "requested_new_tokens": 8,
+  "generated_tokens": 8,
+  "load_seconds": 3.9872,
+  "ttft_seconds": 0.0549,
+  "generation_seconds": 0.1755,
+  "tokens_per_second": 45.5754,
+  "rss_before_load_mb": 288.13,
+  "rss_after_load_mb": 583.61,
+  "rss_final_mb": 596.8,
+  "rss_model_delta_mb": 295.48,
+  "evidence": {
+    "workflow_run_id": 34214001131,
+    "workflow_head_sha": "6179212331659253b7e8f8845f175ab27025ab6e",
+    "artifact_id": 10050996628,
+    "artifact_sha256": "9b4d878e2440327acaa41c583043a514712975c732762d4035570a4a71239dc4"
+  }
+}
