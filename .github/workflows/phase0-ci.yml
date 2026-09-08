@@ -23,3 +23,5 @@ jobs:
             runtime/cpu/smoke_api.py
       - name: Run unit tests
         run: python -m unittest discover -s tests -v
+      - name: Validate CPU compose
+        run: docker compose -f deployment/cpu/docker-compose.yml config -q
