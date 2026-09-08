@@ -6,6 +6,7 @@ on:
     paths:
       - .github/workflows/phase0-model-smoke.yml
       - runtime/cpu/benchmark.py
+      - runtime/cpu/context_benchmark.py
       - runtime/cpu/serve.py
       - runtime/cpu/smoke_api.py
       - runtime/cpu/requirements.txt
@@ -34,6 +35,13 @@ jobs:
             --threads 2 \
             --max-new-tokens 8 \
             --output benchmarks/cpu/github-actions.json
+      - name: Run CPU context-memory benchmark
+        run: |
+          python runtime/cpu/context_benchmark.py \
+            --model jingyaogong/minimind-3 \
+            --threads 2 \
+            --contexts 128 512 1024 2048 \
+            --output benchmarks/cpu/github-actions-context.json
       - name: Start CPU API
         run: |
           python runtime/cpu/serve.py \
