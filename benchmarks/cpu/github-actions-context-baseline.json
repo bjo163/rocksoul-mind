@@ -1,0 +1,41 @@
+{
+  "model": "jingyaogong/minimind-3",
+  "device": "cpu",
+  "dtype": "float32",
+  "contexts": [
+    {
+      "context_tokens": 128,
+      "rss_after_load_mb": 546.64,
+      "rss_after_generation_mb": 566.47,
+      "peak_rss_mb": 668.04,
+      "generation_seconds": 0.1341
+    },
+    {
+      "context_tokens": 512,
+      "rss_after_load_mb": 546.66,
+      "rss_after_generation_mb": 608.59,
+      "peak_rss_mb": 667.94,
+      "generation_seconds": 0.5005
+    },
+    {
+      "context_tokens": 1024,
+      "rss_after_load_mb": 546.66,
+      "rss_after_generation_mb": 618.1,
+      "peak_rss_mb": 698.46,
+      "generation_seconds": 1.2001
+    },
+    {
+      "context_tokens": 2048,
+      "rss_after_load_mb": 546.81,
+      "rss_after_generation_mb": 662.9,
+      "peak_rss_mb": 992.18,
+      "generation_seconds": 3.0062
+    }
+  ],
+  "evidence": {
+    "workflow_run_id": 34214186582,
+    "workflow_head_sha": "b3868d12236623ebebdc2bf67f9801d7a0281322",
+    "artifact_id": 10051089980,
+    "artifact_sha256": "b37a22d91fd0c31f93d7f105fff7d905dd4250c933b59f7fc6a152eb9373d07c"
+  }
+}
