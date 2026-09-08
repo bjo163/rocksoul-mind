@@ -1,12 +1,12 @@
 import argparse
 import hashlib
-import os
 from pathlib import Path
 
 from huggingface_hub import hf_hub_download
 
 REPO_ID = "jingyaogong/minimind-3-pytorch"
 FILENAME = "pretrain_768.pth"
+REVISION = "6e6b53a5361ab41b6376f93e9f0749d5eff3110e"
 EXPECTED_SHA256 = "0191958e7a96ef7cd1e443d379dc2ebea90cfea72cc4450fbcb4a7b87ff945f6"
 
 
@@ -21,7 +21,7 @@ def sha256(path: Path) -> str:
 def main():
     parser = argparse.ArgumentParser(description="Download verified MiniMind-3 dense pretrain checkpoint")
     parser.add_argument("--output-dir", default="out")
-    parser.add_argument("--revision", default="main")
+    parser.add_argument("--revision", default=REVISION)
     args = parser.parse_args()
 
     out_dir = Path(args.output_dir)
@@ -38,6 +38,7 @@ def main():
     if actual != EXPECTED_SHA256:
         raise SystemExit(f"Checkpoint SHA256 mismatch: expected {EXPECTED_SHA256}, got {actual}")
     print(f"Verified: {downloaded}")
+    print(f"Revision: {args.revision}")
     print(f"SHA256: {actual}")
 
 
