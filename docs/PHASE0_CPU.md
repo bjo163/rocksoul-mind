@@ -14,7 +14,7 @@ pip install torch==2.6.0 --index-url https://download.pytorch.org/whl/cpu
 pip install -r runtime/cpu/requirements.txt
 ```
 
-## Benchmark
+## Core benchmark
 
 ```bash
 python runtime/cpu/benchmark.py \
@@ -23,7 +23,7 @@ python runtime/cpu/benchmark.py \
   --output benchmarks/cpu/local.json
 ```
 
-The benchmark records:
+The core benchmark records:
 
 - exact model identifier
 - Python and PyTorch versions
@@ -36,6 +36,19 @@ The benchmark records:
 - process RSS before and after model loading
 
 The first execution downloads the model from Hugging Face and is therefore not representative of steady-state startup if network transfer time dominates. Keep the Hugging Face cache between runs.
+
+## Context-memory benchmark
+
+Run each context size in an isolated child process so allocator state from a previous measurement cannot contaminate the next one:
+
+```bash
+python runtime/cpu/context_benchmark.py \
+  --model jingyaogong/minimind-3 \
+  --contexts 128 512 1024 2048 \
+  --output benchmarks/cpu/context-local.json
+```
+
+For each context size the result records RSS after model loading, RSS after one-token generation, peak RSS and generation latency.
 
 ## OpenAI-compatible API
 
@@ -72,8 +85,9 @@ The named `rocksoul_hf_cache` volume preserves downloaded model files across con
 1. Record CPU model, core/thread count and total RAM with every benchmark result.
 2. Use the same prompt and `max_new_tokens` when comparing runs.
 3. Run at least three measured passes after model download and warm-up.
-4. Do not compare PyTorch FP32 results directly with later GGUF quantized results without labeling runtime and quantization.
-5. Keep ID+EN/domain training out of Phase 0 results.
+4. Run context-memory measurements in isolated processes.
+5. Do not compare PyTorch FP32 results directly with later GGUF quantized results without labeling runtime and quantization.
+6. Keep ID+EN/domain training out of Phase 0 results.
 
 ## Exit criteria
 
@@ -82,6 +96,7 @@ Phase 0 can close when:
 - clean CPU inference succeeds
 - API smoke test succeeds
 - benchmark result from the target CPU server is committed
+- context-memory baseline from the target CPU server is committed
 - tool-call parser tests pass
 - CPU CI passes
 - baseline RAM, TTFT and tokens/sec are known
