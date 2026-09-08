@@ -1,0 +1,23 @@
+services:
+  rocksoul-mind:
+    build:
+      context: ../..
+      dockerfile: runtime/cpu/Dockerfile
+    container_name: rocksoul-mind-cpu
+    restart: unless-stopped
+    ports:
+      - "8998:8998"
+    environment:
+      HF_HOME: /root/.cache/huggingface
+    volumes:
+      - rocksoul_hf_cache:/root/.cache/huggingface
+    command:
+      - --model
+      - jingyaogong/minimind-3
+      - --host
+      - 0.0.0.0
+      - --port
+      - "8998"
+
+volumes:
+  rocksoul_hf_cache:
