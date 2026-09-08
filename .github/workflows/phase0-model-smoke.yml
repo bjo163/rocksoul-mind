@@ -5,6 +5,11 @@ on:
     branches: [dev]
     paths:
       - .github/workflows/phase0-model-smoke.yml
+      - runtime/cpu/benchmark.py
+      - runtime/cpu/serve.py
+      - runtime/cpu/smoke_api.py
+      - runtime/cpu/requirements.txt
+      - scripts/serve_openai_api.py
   workflow_dispatch:
 
 jobs:
@@ -47,12 +52,17 @@ jobs:
           done
           cat /tmp/rocksoul-server.log
           exit 1
+      - name: Collect logs
+        if: always()
+        run: |
+          mkdir -p benchmarks/cpu
+          if [ -f /tmp/rocksoul-server.log ]; then
+            cp /tmp/rocksoul-server.log benchmarks/cpu/rocksoul-server.log
+          fi
       - name: Upload benchmark
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: phase0-cpu-benchmark
-          path: |
-            benchmarks/cpu/github-actions.json
-            /tmp/rocksoul-server.log
+          path: benchmarks/cpu/
           if-no-files-found: warn
