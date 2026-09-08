@@ -20,6 +20,7 @@ jobs:
             rocksoul/tool_parser.py \
             runtime/cpu/benchmark.py \
             runtime/cpu/context_benchmark.py \
+            runtime/cpu/system_info.py \
             runtime/cpu/serve.py \
             runtime/cpu/smoke_api.py
       - name: Run unit tests
