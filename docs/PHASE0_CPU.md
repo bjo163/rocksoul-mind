@@ -14,7 +14,30 @@ pip install torch==2.6.0 --index-url https://download.pytorch.org/whl/cpu
 pip install -r runtime/cpu/requirements.txt
 ```
 
-## Record target server hardware
+## One-command target baseline
+
+After dependencies are installed, the target server can capture all required Phase 0 evidence with:
+
+```bash
+bash runtime/cpu/run_phase0.sh
+```
+
+By default this writes:
+
+```text
+benchmarks/cpu/production/system-info.json
+benchmarks/cpu/production/core.json
+benchmarks/cpu/production/context.json
+benchmarks/cpu/production/manifest.json
+```
+
+Optional environment overrides are supported, for example:
+
+```bash
+THREADS=4 MODEL=jingyaogong/minimind-3 bash runtime/cpu/run_phase0.sh
+```
+
+## Record target server hardware manually
 
 ```bash
 python runtime/cpu/system_info.py > benchmarks/cpu/system-info.json
