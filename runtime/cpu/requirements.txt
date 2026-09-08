@@ -1,0 +1,7 @@
+accelerate==1.1.1
+fastapi==0.115.6
+psutil==5.9.8
+pydantic==2.11.5
+safetensors==0.4.5
+transformers==4.57.6
+uvicorn==0.34.0
