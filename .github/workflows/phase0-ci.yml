@@ -31,6 +31,7 @@ jobs:
           bash -n runtime/cpu/run_phase0.sh
           bash -n runtime/cpu/bootstrap_phase0.sh
           bash -n phase1/train_iden.sh
+          bash -n phase1/run_pilot.sh
       - name: Validate Kaggle notebook JSON
         run: python -m json.tool notebooks/kaggle_phase1_iden.ipynb >/dev/null
       - name: Run unit tests
